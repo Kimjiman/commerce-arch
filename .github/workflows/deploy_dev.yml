@@ -1,0 +1,103 @@
+name: Deploy Dev
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  JAR_NAME: basic-arch-0.0.1-SNAPSHOT.jar
+  JAR_PATH: /home/ec2-user
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Checkout
+        uses: actions/checkout@v4
+
+      - name: 2. Install JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: 3. Build
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+
+      - name: 4. Open SSH port for GitHub Actions
+        # elastiCache 과금정책 때문에 Deploy단계부터 스킵
+        if: false
+        run: |
+          GITHUB_IP=$(curl -s https://checkip.amazonaws.com)
+          aws ec2 authorize-security-group-ingress \
+            --group-id ${{ secrets.EC2_SG_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${GITHUB_IP}/32
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+
+      - name: 5. Upload
+        # elastiCache 과금정책 때문에 Deploy단계부터 스킵
+        if: false
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          source: build/libs/${{ env.JAR_NAME }}
+          target: ${{ env.JAR_PATH }}/
+
+      - name: 6. Deploy
+        # elastiCache 과금정책 때문에 Deploy단계부터 스킵
+        if: false
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            # 로그 디렉토리 생성
+            sudo mkdir -p /web/jar/log
+            sudo chown ec2-user:ec2-user /web/jar/log
+
+            # 기존 프로세스 종료
+            if [ -f ${{ env.JAR_PATH }}/app.pid ]; then
+              kill $(cat ${{ env.JAR_PATH }}/app.pid) || true
+              sleep 3
+            fi
+
+            # 백그라운드로 실행
+            nohup java -jar ${{ env.JAR_PATH }}/${{ env.JAR_NAME }} \
+              --spring.profiles.active=dev \
+              --spring.datasource.url=${{ secrets.DB_URL }} \
+              --spring.datasource.username=${{ secrets.DB_USERNAME }} \
+              --spring.datasource.password=${{ secrets.DB_PASSWORD }} \
+              --spring.data.redis.host=${{ secrets.REDIS_HOST }} \
+              --spring.data.redis.port=6379 \
+              > /dev/null 2>&1 &
+            disown
+
+            echo "Deployed successfully"
+
+      # 배포 후 GitHub Actions IP를 보안 그룹에서 제거
+      - name: 7. Close SSH port
+        # elastiCache 과금정책 때문에 Deploy단계부터 스킵
+        if: false
+        # if: always()
+        run: |
+          GITHUB_IP=$(curl -s https://checkip.amazonaws.com)
+          aws ec2 revoke-security-group-ingress \
+            --group-id ${{ secrets.EC2_SG_ID }} \
+            --protocol tcp \
+            --port 22 \
+            --cidr ${GITHUB_IP}/32
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
