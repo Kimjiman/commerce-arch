@@ -1,27 +1,39 @@
 ---
-description: Scaffold a new module following this project's Layered + Facade pattern. Usage: /new-module {moduleName} (e.g., /new-module payment)
+description: Scaffold new modules following this project's Layered + Facade pattern. Usage: /new-module {moduleName} [moduleName2] ... (e.g., /new-module payment orderItem)
 ---
 
 # New Module Scaffold
 
-Generate all 10 files for a new module based on `$ARGUMENTS`, following this project's architecture conventions.
+Generate all 10 files for each module name in `$ARGUMENTS`, following this project's architecture conventions.
+
+## Step 0 — Detect package root and base path
+
+Before generating files, read the actual project structure:
+1. Run `find src/main/java -name "*.java" | head -1` and read its `package` declaration
+2. Extract the root package (e.g., `com.basicarch`)
+3. Derive base path: `src/main/java/{package/path}/` (e.g., `src/main/java/com/basicarch/`)
+
+Use these detected values everywhere. Never hardcode package roots.
 
 ## Rules
 
-- `$ARGUMENTS` = module name (e.g., `payment`, `orderItem`)
-- Package root: `com.example.basicarch.module.{moduleName}`
-- File path: `src/main/java/com/example/basicarch/module/{moduleName}/`
-- `{Name}` = PascalCase (e.g., `Payment`, `OrderItem`)
-- `{nameCamel}` = camelCase (e.g., `payment`, `orderItem`)
-- `{table_name}` = snake_case (e.g., `payment`, `order_item`)
+- `$ARGUMENTS` = space-separated list of module names (e.g., `payment orderItem`)
+- Package root: `{detectedPackageRoot}.module.{moduleDir}`
+- File path: `{detectedBasePath}module/{moduleDir}/`
+- `{moduleDir}` = all lowercase, no separators — Java package convention (e.g., `orderitem`, `payment`)
+- `{Name}` = PascalCase — class names (e.g., `Payment`, `OrderItem`)
+- `{nameCamel}` = camelCase — variable names (e.g., `payment`, `orderItem`)
+- `{table_name}` = snake_case — DB table/column names only (e.g., `payment`, `order_item`)
+
+Repeat all 10 files for each module in the list.
 
 ## Files to Generate (10 total)
 
 ### 1. `entity/{Name}.java`
 ```java
-package com.example.basicarch.module.{moduleName}.entity;
+package {detectedPackageRoot}.module.{moduleName}.entity;
 
-import com.example.basicarch.base.model.BaseEntity;
+import {detectedPackageRoot}.base.model.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,9 +57,9 @@ public class {Name} extends BaseEntity<Long> {
 
 ### 2. `model/{Name}Model.java`
 ```java
-package com.example.basicarch.module.{moduleName}.model;
+package {detectedPackageRoot}.module.{moduleName}.model;
 
-import com.example.basicarch.base.model.BaseModel;
+import {detectedPackageRoot}.base.model.BaseModel;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -67,9 +79,9 @@ public class {Name}Model extends BaseModel<Long> {
 
 ### 3. `model/{Name}SearchParam.java`
 ```java
-package com.example.basicarch.module.{moduleName}.model;
+package {detectedPackageRoot}.module.{moduleName}.model;
 
-import com.example.basicarch.base.model.BaseSearchParam;
+import {detectedPackageRoot}.base.model.BaseSearchParam;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -87,9 +99,9 @@ public class {Name}SearchParam extends BaseSearchParam<Long> {
 
 ### 4. `repository/{Name}Repository.java`
 ```java
-package com.example.basicarch.module.{moduleName}.repository;
+package {detectedPackageRoot}.module.{moduleName}.repository;
 
-import com.example.basicarch.module.{moduleName}.entity.{Name};
+import {detectedPackageRoot}.module.{moduleName}.entity.{Name};
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface {Name}Repository extends JpaRepository<{Name}, Long>, {Name}RepositoryCustom {
@@ -98,10 +110,10 @@ public interface {Name}Repository extends JpaRepository<{Name}, Long>, {Name}Rep
 
 ### 5. `repository/{Name}RepositoryCustom.java`
 ```java
-package com.example.basicarch.module.{moduleName}.repository;
+package {detectedPackageRoot}.module.{moduleName}.repository;
 
-import com.example.basicarch.module.{moduleName}.entity.{Name};
-import com.example.basicarch.module.{moduleName}.model.{Name}SearchParam;
+import {detectedPackageRoot}.module.{moduleName}.entity.{Name};
+import {detectedPackageRoot}.module.{moduleName}.model.{Name}SearchParam;
 
 import java.util.List;
 
@@ -112,15 +124,15 @@ public interface {Name}RepositoryCustom {
 
 ### 6. `repository/{Name}RepositoryImpl.java`
 ```java
-package com.example.basicarch.module.{moduleName}.repository;
+package {detectedPackageRoot}.module.{moduleName}.repository;
 
-import com.example.basicarch.module.{moduleName}.entity.{Name};
-import com.example.basicarch.module.{moduleName}.entity.Q{Name};
-import com.example.basicarch.module.{moduleName}.model.{Name}SearchParam;
+import {detectedPackageRoot}.module.{moduleName}.entity.{Name};
+import {detectedPackageRoot}.module.{moduleName}.entity.Q{Name};
+import {detectedPackageRoot}.module.{moduleName}.model.{Name}SearchParam;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import com.example.basicarch.base.utils.StringUtils;
+import {detectedPackageRoot}.base.utils.StringUtils;
 
 import java.util.List;
 
@@ -150,12 +162,12 @@ public class {Name}RepositoryImpl implements {Name}RepositoryCustom {
 
 ### 7. `service/{Name}Service.java`
 ```java
-package com.example.basicarch.module.{moduleName}.service;
+package {detectedPackageRoot}.module.{moduleName}.service;
 
-import com.example.basicarch.base.service.BaseService;
-import com.example.basicarch.module.{moduleName}.entity.{Name};
-import com.example.basicarch.module.{moduleName}.model.{Name}SearchParam;
-import com.example.basicarch.module.{moduleName}.repository.{Name}Repository;
+import {detectedPackageRoot}.base.service.BaseService;
+import {detectedPackageRoot}.module.{moduleName}.entity.{Name};
+import {detectedPackageRoot}.module.{moduleName}.model.{Name}SearchParam;
+import {detectedPackageRoot}.module.{moduleName}.repository.{Name}Repository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -167,22 +179,46 @@ import java.util.Optional;
 public class {Name}Service implements BaseService<{Name}, {Name}SearchParam, Long> {
     private final {Name}Repository {nameCamel}Repository;
 
-    @Override public boolean existsById(Long id) { return {nameCamel}Repository.existsById(id); }
-    @Override public Optional<{Name}> findById(Long id) { return {nameCamel}Repository.findById(id); }
-    @Override public List<{Name}> findAllBy({Name}SearchParam param) { return {nameCamel}Repository.findAllBy(param); }
-    @Override public {Name} save({Name} entity) { return {nameCamel}Repository.save(entity); }
-    @Override public {Name} update({Name} entity) { return {nameCamel}Repository.save(entity); }
-    @Override public void deleteById(Long id) { if (id == null) return; {nameCamel}Repository.deleteById(id); }
+    @Override 
+    public boolean existsById(Long id) { 
+        return {nameCamel}Repository.existsById(id); 
+    }
+    
+    @Override 
+    public Optional<{Name}> findById(Long id) { 
+        return {nameCamel}Repository.findById(id); 
+    }
+    
+    @Override
+    public List<{Name}> findAllBy({Name}SearchParam param) { 
+        return {nameCamel}Repository.findAllBy(param);
+    }
+    
+    @Override 
+    public {Name} save({Name} entity) { 
+        return {nameCamel}Repository.save(entity); 
+    }
+    
+    @Override 
+    public {Name} update({Name} entity) { 
+        return {nameCamel}Repository.save(entity); 
+    }
+    
+    @Override 
+    public void deleteById(Long id) { 
+        if (id == null) return;
+        {nameCamel}Repository.deleteById(id); 
+    }
 }
 ```
 
 ### 8. `converter/{Name}Converter.java`
 ```java
-package com.example.basicarch.module.{moduleName}.converter;
+package {detectedPackageRoot}.module.{moduleName}.converter;
 
-import com.example.basicarch.base.converter.TypeConverter;
-import com.example.basicarch.module.{moduleName}.entity.{Name};
-import com.example.basicarch.module.{moduleName}.model.{Name}Model;
+import {detectedPackageRoot}.base.converter.TypeConverter;
+import {detectedPackageRoot}.module.{moduleName}.entity.{Name};
+import {detectedPackageRoot}.module.{moduleName}.model.{Name}Model;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -206,15 +242,15 @@ public interface {Name}Converter {
 
 ### 9. `facade/{Name}Facade.java`
 ```java
-package com.example.basicarch.module.{moduleName}.facade;
+package {detectedPackageRoot}.module.{moduleName}.facade;
 
-import com.example.basicarch.base.annotation.Facade;
-import com.example.basicarch.base.exception.SystemErrorCode;
-import com.example.basicarch.base.exception.ToyAssert;
-import com.example.basicarch.module.{moduleName}.converter.{Name}Converter;
-import com.example.basicarch.module.{moduleName}.model.{Name}Model;
-import com.example.basicarch.module.{moduleName}.model.{Name}SearchParam;
-import com.example.basicarch.module.{moduleName}.service.{Name}Service;
+import {detectedPackageRoot}.base.annotation.Facade;
+import {detectedPackageRoot}.base.exception.SystemErrorCode;
+import {detectedPackageRoot}.base.exception.ToyAssert;
+import {detectedPackageRoot}.module.{moduleName}.converter.{Name}Converter;
+import {detectedPackageRoot}.module.{moduleName}.model.{Name}Model;
+import {detectedPackageRoot}.module.{moduleName}.model.{Name}SearchParam;
+import {detectedPackageRoot}.module.{moduleName}.service.{Name}Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
@@ -256,11 +292,11 @@ public class {Name}Facade {
 
 ### 10. `controller/{Name}Controller.java`
 ```java
-package com.example.basicarch.module.{moduleName}.controller;
+package {detectedPackageRoot}.module.{moduleName}.controller;
 
-import com.example.basicarch.module.{moduleName}.facade.{Name}Facade;
-import com.example.basicarch.module.{moduleName}.model.{Name}Model;
-import com.example.basicarch.module.{moduleName}.model.{Name}SearchParam;
+import {detectedPackageRoot}.module.{moduleName}.facade.{Name}Facade;
+import {detectedPackageRoot}.module.{moduleName}.model.{Name}Model;
+import {detectedPackageRoot}.module.{moduleName}.model.{Name}SearchParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -291,7 +327,7 @@ public class {Name}Controller {
 
 ## After Generation
 
-Remind the user to:
+For each module generated, remind the user to:
 1. Add fields to `{Name}.java` and `{Name}Model.java`
 2. Create Flyway migration: `src/main/resources/db/migration/V{next}__{table_name}.sql`
 3. Run build to generate QueryDSL Q-classes: `JAVA_HOME=/c/java/jdk-21.0.10+7 ./gradlew clean build`
