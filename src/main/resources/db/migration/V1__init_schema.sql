@@ -1,7 +1,3 @@
--- =============================================
--- V1: 초기 스키마 생성
--- =============================================
-
 -- ===================
 -- user
 -- ===================
@@ -11,6 +7,7 @@ CREATE TABLE "user" (
     login_id VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(100) NOT NULL,
     name VARCHAR(100) NOT NULL,
+    role VARCHAR(3) NOT NULL,
     use_yn VARCHAR(1) NOT NULL DEFAULT 'Y',
     create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     create_id BIGINT DEFAULT 0,
@@ -114,88 +111,3 @@ COMMENT ON COLUMN code.create_time IS '생성 일시';
 COMMENT ON COLUMN code.create_id IS '생성자 ID';
 COMMENT ON COLUMN code.update_time IS '수정 일시';
 COMMENT ON COLUMN code.update_id IS '수정자 ID';
-
--- ===================
--- menu
--- ===================
-
-CREATE TABLE menu (
-    id BIGSERIAL PRIMARY KEY,
-    parent_id BIGINT DEFAULT NULL,
-    uri VARCHAR(200) DEFAULT NULL,
-    node_path VARCHAR(200) DEFAULT NULL,
-    name VARCHAR(100) DEFAULT NULL,
-    "order" INT DEFAULT NULL,
-    icon_path VARCHAR(200) DEFAULT NULL,
-    use_yn VARCHAR(1) DEFAULT 'Y',
-    roles VARCHAR(500) DEFAULT NULL,
-    description VARCHAR(500) DEFAULT NULL,
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    create_id BIGINT DEFAULT 0,
-    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_id BIGINT DEFAULT 0
-);
-
-COMMENT ON TABLE menu IS '메뉴';
-COMMENT ON COLUMN menu.id IS '메뉴 PK';
-COMMENT ON COLUMN menu.parent_id IS '상위 메뉴 ID (self FK)';
-COMMENT ON COLUMN menu.uri IS '메뉴 URI 경로';
-COMMENT ON COLUMN menu.node_path IS '노드 경로 (트리 구조 표현)';
-COMMENT ON COLUMN menu.name IS '메뉴명';
-COMMENT ON COLUMN menu."order" IS '정렬 순서';
-COMMENT ON COLUMN menu.icon_path IS '아이콘 경로';
-COMMENT ON COLUMN menu.use_yn IS '사용 여부 (Y/N)';
-COMMENT ON COLUMN menu.roles IS '접근 가능 역할 (콤마 구분, 예: ADM,USR)';
-COMMENT ON COLUMN menu.description IS '메뉴 설명';
-COMMENT ON COLUMN menu.create_time IS '생성 일시';
-COMMENT ON COLUMN menu.create_id IS '생성자 ID';
-COMMENT ON COLUMN menu.update_time IS '수정 일시';
-COMMENT ON COLUMN menu.update_id IS '수정자 ID';
-
--- ===================
--- role
--- ===================
-
-CREATE TABLE role (
-    id BIGSERIAL PRIMARY KEY,
-    role_name VARCHAR(50) DEFAULT NULL,
-    description VARCHAR(200) DEFAULT NULL,
-    use_yn VARCHAR(1) DEFAULT 'Y',
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    create_id BIGINT DEFAULT 0,
-    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_id BIGINT DEFAULT 0
-);
-
-COMMENT ON TABLE role IS '역할(권한)';
-COMMENT ON COLUMN role.id IS '역할 PK';
-COMMENT ON COLUMN role.role_name IS '역할 식별자 (예: ADM, USR)';
-COMMENT ON COLUMN role.description IS '역할 설명';
-COMMENT ON COLUMN role.use_yn IS '사용 여부 (Y/N)';
-COMMENT ON COLUMN role.create_time IS '생성 일시';
-COMMENT ON COLUMN role.create_id IS '생성자 ID';
-COMMENT ON COLUMN role.update_time IS '수정 일시';
-COMMENT ON COLUMN role.update_id IS '수정자 ID';
-
--- ===================
--- user_role
--- ===================
-
-CREATE TABLE user_role (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT DEFAULT NULL,
-    role_id BIGINT DEFAULT NULL,
-    create_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    create_id BIGINT DEFAULT 0,
-    update_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    update_id BIGINT DEFAULT 0
-);
-
-COMMENT ON TABLE user_role IS '사용자-역할 매핑';
-COMMENT ON COLUMN user_role.id IS '매핑 PK';
-COMMENT ON COLUMN user_role.user_id IS '사용자 FK (user.id)';
-COMMENT ON COLUMN user_role.role_id IS '역할 FK (role.id)';
-COMMENT ON COLUMN user_role.create_time IS '생성 일시';
-COMMENT ON COLUMN user_role.create_id IS '생성자 ID';
-COMMENT ON COLUMN user_role.update_time IS '수정 일시';
-COMMENT ON COLUMN user_role.update_id IS '수정자 ID';

@@ -1,7 +1,6 @@
 package com.basicarch.config.listener;
 
 import com.basicarch.module.code.facade.CodeFacade;
-import com.basicarch.module.menu.facade.MenuFacade;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -24,11 +23,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class CacheListener {
     private final CodeFacade codeFacade;
-    private final MenuFacade menuFacade;
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationReady() {
         codeFacade.refresh();
-        menuFacade.refresh();
     }
 }

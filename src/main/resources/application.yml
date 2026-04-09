@@ -1,6 +1,6 @@
 spring:
   application:
-    name: basicarch
+    name: commerce-arch
   config:
     import:
       - classpath:jwt.yml
@@ -35,7 +35,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
     consumer:
-      group-id: basic-arch
+      group-id: commerce-arch
       auto-offset-reset: earliest # earliest: 토픽에 쌓인 가장 오래된 메시지부터, latest 등록 시점 이후에 들어오는 메시지만
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -82,8 +82,8 @@ management:
 
 info:
   app:
-    name: basicarch
-    description: basicarch
+    name: commerce-arch
+    description: commerce-arch
 
 cache:
   publisher: redis

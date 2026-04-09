@@ -23,6 +23,7 @@ public class UserModel extends BaseModel<Long> {
     private String loginId;
     private String password;
     private String name;
+    private String role;
     private YN useYn;
     private List<String> roleList;
 }

@@ -15,8 +15,8 @@ import java.security.NoSuchAlgorithmException;
 @EnableAspectJAutoProxy
 @EnableScheduling
 @EnableCaching
-public class BasicArchApplication extends SpringBootServletInitializer {
-    private static final Class<?> app = BasicArchApplication.class;
+public class CommerceArchApplication extends SpringBootServletInitializer {
+    private static final Class<?> app = CommerceArchApplication.class;
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         SpringApplication springApplication = new SpringApplication(app);

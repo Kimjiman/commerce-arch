@@ -33,7 +33,7 @@ spring:
 
 file:
   store:
-    path: c:/tmp/basic-arch
+    path: c:/tmp/commerce-arch
 postgres:
   host: localhost
   port: 15432

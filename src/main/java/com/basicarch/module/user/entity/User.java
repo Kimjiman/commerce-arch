@@ -32,6 +32,9 @@ public class User extends BaseEntity<Long> {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "role", nullable = false)
+    private String role;
+
     @Column(name = "use_yn", nullable = false)
     @Builder.Default
     private String useYn = "Y";

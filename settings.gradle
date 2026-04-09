@@ -5,4 +5,4 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
-rootProject.name = 'basic-arch'
+rootProject.name = 'commerce-arch'

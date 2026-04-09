@@ -115,7 +115,6 @@ AuthFacade  → UserService (login)
 
 - `code` — Code/CodeGroup management (CodeGroup ↔ Code: @OneToMany), `CodeFacade`, `CodeGroupCacheService`
 - `user` — User management & auth (JWT-based), `AuthFacade`, `UserFacade`
-- `menu` — Menu management, `MenuFacade`, `MenuCacheService`
 - `file` — File upload/download
 
 ### Cache Architecture
@@ -319,28 +318,6 @@ client.get("/path", ResponseType.class);
 - 작업 종료 시 반드시 확인: "현재 실행 중인 유료 AWS 리소스가 있습니다. 종료하시겠습니까?"
 - 비용이 발생할 수 있는 작업 전에는 반드시 먼저 물어볼 것
 
-## Learning Style
-
-The goal is interview preparation. When learning or implementing anything, always cover these perspectives:
-
-- **Principle**: Why it works this way, internal mechanism
-- **Trade-offs**: Pros/cons of this technology or design decision, comparison with alternatives
-- **Failure handling**: Failure scenarios, recovery strategies, monitoring points
-- **Interview angle**: Be able to articulate the reasoning behind technical choices clearly
-
-## Learning Roadmap
-
-이직 준비 학습 순서
-
-| 순서 | 기술 | 목표 | 상태 |
-|------|------|------|------|
-| 1 | **Prometheus + Grafana** | Actuator 메트릭 수집, 대시보드 구성 | 완료 |
-| 2 | **AWS + ElastiCache** | EC2 배포, RDS(PostgreSQL), ElastiCache(Redis) 연동 | 진행중 |
-| 3 | **Kafka** | docker-compose에 Kafka 추가, Redis Pub/Sub → Kafka 전환, 이벤트 드리븐 아키텍처, DLT 처리 | 대기 |
-| 4 | **Debezium** | DB 변경 → Kafka CDC 연동, 이벤트 소싱 실습 | 대기 |
-| 5 | **Loki + OpenTelemetry** | 로그 수집, 분산 추적, Grafana 연동 | 대기 |
-| 6 | **Kubernetes** | minikube로 현재 프로젝트 배포, Deployment/Service/ConfigMap/Secret/HPA 실습 | 대기 |
-
 ## Project Structure
 
 ```
@@ -368,7 +345,7 @@ src/main/java/com/example/basicarch/
 │                         JsonUtils, WebRequestUtils, RegexPattern, CommonUtils, CookieUtils,
 │                         CryptoUtils, NetworkUtils, NumberUtils, ReflectionUtils, ShellExecute
 ├── config/
-│   ├── advice/         — ResponseAdvice, ExceptionAdvice
+│   ├── advice/          — ResponseAdvice, ExceptionAdvice
 │   ├── interceptor/    — RoleInterceptor
 │   ├── listener/       — CacheListener (앱 시작 시 캐시 초기화)
 │   └── scheduler/      — CacheScheduler
