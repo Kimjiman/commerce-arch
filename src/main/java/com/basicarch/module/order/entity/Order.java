@@ -16,5 +16,16 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "orders")
 public class Order extends BaseEntity<Long> {
-    // TODO: add fields
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "total_amount", nullable = false)
+    private Long totalAmount;
+
+    @Column(name = "status", nullable = false)
+    @Builder.Default
+    private String status = "PENDING";
+
+    @Column(name = "delivery_address")
+    private String deliveryAddress;
 }

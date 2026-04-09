@@ -18,4 +18,15 @@ import lombok.experimental.SuperBuilder;
 public class Product extends BaseEntity<Long> {
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "price", nullable = false)
+    private Long price;
+
+    @Column(name = "stock_qty", nullable = false)
+    @Builder.Default
+    private Integer stockQty = 0;
+
+    @Column(name = "status", nullable = false)
+    @Builder.Default
+    private String status = "ON_SALE";
 }

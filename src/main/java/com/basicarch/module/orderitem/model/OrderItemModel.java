@@ -13,5 +13,8 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderItemModel extends BaseModel<Long> {
-    // TODO: add fields
+    private Long orderId;
+    private Long productId;
+    private Integer quantity;
+    private Long unitPrice;
 }

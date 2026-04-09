@@ -14,4 +14,7 @@ import lombok.experimental.SuperBuilder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductModel extends BaseModel<Long> {
     private String name;
+    private Long price;
+    private Integer stockQty;
+    private String status;
 }

@@ -36,6 +36,7 @@ public class UserRepositoryTest extends BaseRepositoryTest {
                 .loginId("admin2")
                 .password("1234")
                 .name("김지만")
+                .role("USR")
                 .useYn("Y")
                 .build());
 

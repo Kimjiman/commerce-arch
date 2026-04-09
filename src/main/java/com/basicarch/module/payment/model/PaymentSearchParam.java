@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @SuperBuilder
 @NoArgsConstructor
-@AllArgsConstructor
 public class PaymentSearchParam extends BaseSearchParam<Long> {
     // TODO: add search fields
 }

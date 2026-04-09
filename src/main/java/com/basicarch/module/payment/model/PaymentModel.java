@@ -13,5 +13,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PaymentModel extends BaseModel<Long> {
-    // TODO: add fields
+    private Long orderId;
+    private Long amount;
+    private String method;
+    private String status;
+    private String paidAt;
 }

@@ -16,5 +16,15 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @Table(name = "order_item")
 public class OrderItem extends BaseEntity<Long> {
-    // TODO: add fields
+    @Column(name = "order_id", nullable = false)
+    private Long orderId;
+
+    @Column(name = "product_id", nullable = false)
+    private Long productId;
+
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
+    @Column(name = "unit_price", nullable = false)
+    private Long unitPrice;
 }
